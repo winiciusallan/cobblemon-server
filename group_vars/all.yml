@@ -1,0 +1,20 @@
+# Server variables
+server_gamemode: survival
+server_seed: null
+server_motd: "Cobblemon Server"
+server_pvp_on: true
+server_allow_flight: true
+server_difficulty: normal
+server_max_players: 20
+server_allow_pirate: true
+server_whitelist: false
+
+server_mem_gb: 2
+
+# Curseforge variables
+# Url for 1.21.1. Change here with an updated version
+# You can check for more informations in https://www.curseforge.com/minecraft/modpacks/cobblemon-fabric
+cobblemon_url: https://www.curseforge.com/api/v1/mods/821748/files/6132445/download
+
+# Role variables
+server_directory: "{{ ansible_user_dir }}/server"

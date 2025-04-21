@@ -1,0 +1,9 @@
+- name: Install packages
+  ansible.builtin.apt:
+    pkg:
+    - openjdk-21-jre-headless
+    - curl
+    - unzip
+    update_cache: yes
+  become: true
+

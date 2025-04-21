@@ -1,0 +1,10 @@
+- name: Install packages
+  ansible.builtin.import_tasks: install-packages.yml
+
+- name: Setup server
+  ansible.builtin.import_tasks: setup.yml
+  tags:
+  - setup
+
+- name: Deploy server
+  ansible.builtin.import_tasks: deploy.yml

@@ -1,0 +1,56 @@
+- name: Create server directory
+  ansible.builtin.file:
+    path: "{{ server_directory }}"
+    state: directory
+    mode: '0755'
+
+- name: Download server file
+  ansible.builtin.get_url:
+    url: "{{ cobblemon_url }}"
+    dest: "{{ ansible_user_dir}}/fabric_cobblemon_server.zip"
+
+- name: Unzip server file
+  ansible.builtin.unarchive:
+    src: "{{ ansible_user_dir }}/fabric_cobblemon_server.zip"
+    dest: "{{ server_directory }}/"
+    remote_src: yes
+
+- name: Create server properties
+  ansible.builtin.template:
+    src: server.properties.j2
+    dest: "{{ server_directory }}/server.properties"
+  notify:
+  - stop_server
+  - wait_server_stop
+  - start_server
+
+- name: Create eula
+  ansible.builtin.template:
+    src: eula.txt.j2
+    dest: "{{ server_directory }}/eula.txt"
+
+- name: Find server jar file
+  ansible.builtin.find:
+    paths: "{{ server_directory }}"
+    file_type: file
+    patterns:
+    - "fabric-server-mc.*"
+    limit: 1
+  register: server_jar_file_name
+
+- name: Set server start command
+  ansible.builtin.set_fact:
+    server_start_command: >-
+      java -Xmx{{ server_mem_gb }}G
+      -jar {{ server_jar_file_name.files[0].path }} nogui
+
+- name: Check if server session exists
+  ansible.builtin.shell: tmux ls -F '#S' | grep minecraft
+  register: tmux_session_exists
+  changed_when: tmux_session_exists.rc != 0
+  failed_when: false
+
+- name: Create tmux session
+  ansible.builtin.command:
+    cmd: "tmux new-session -d -s 'minecraft'"
+  when: tmux_session_exists.rc != 0

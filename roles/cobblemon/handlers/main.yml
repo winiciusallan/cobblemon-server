@@ -1,0 +1,14 @@
+- name: stop_server
+  ansible.builtin.command:
+    cmd: tmux send-keys -t minecraft C-c
+
+- name: wait_server_stop
+  ansible.builtin.wait_for:
+    port: 25565
+    state: stopped
+    timeout: 5
+
+- name: start_server
+  ansible.builtin.command:
+    cmd: tmux send-keys -t minecraft "cd {{ server_directory }}; {{ server_start_command }}" C-m
+

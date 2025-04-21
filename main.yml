@@ -1,0 +1,5 @@
+- name: Deploy minecraft server with Cobblemon
+  hosts: minecraft
+  remote_user: ubuntu
+  roles:
+    - role: cobblemon
